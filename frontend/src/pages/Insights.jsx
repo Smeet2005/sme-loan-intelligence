@@ -1,139 +1,150 @@
-import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, TrendingUp, TrendingDown, DollarSign, Activity, AlertCircle, CheckCircle2 } from "lucide-react";
-import { companies } from "../data/companies";
+import { useParams, useNavigate } from "react-router-dom";
 
 function Insights() {
     const { id } = useParams();
-    const company = companies.find(c => c.id === parseInt(id));
+    const navigate = useNavigate();
 
-    if (!company) {
-        return (
-            <div className="page-container">
-                <header className="page-header">
-                    <h1 className="page-title">Company Not Found</h1>
-                    <Link to="/" className="btn-action" style={{ display: "inline-flex", marginTop: "16px" }}>
-                        <ArrowLeft size={16} /> Back to Dashboard
-                    </Link>
-                </header>
-            </div>
-        );
-    }
+    const companies = [
+        { id: "1", name: "ABC Pvt Ltd", revenue: 550000, expenses: 350000, healthScore: 78 },
+        { id: "2", name: "XYZ Traders", revenue: 300000, expenses: 280000, healthScore: 52 },
+        { id: "3", name: "TechNova Solutions", revenue: 650000, expenses: 380000, healthScore: 85 },
+        { id: "4", name: "Apex Manufacturing", revenue: 230000, expenses: 225000, healthScore: 45 },
+        { id: "5", name: "Global Exports", revenue: 480000, expenses: 350000, healthScore: 67 },
+        { id: "6", name: "Sunrise Traders", revenue: 150000, expenses: 160000, healthScore: 35 },
+    ];
 
+    const company = companies.find((c) => c.id === id);
+
+    if (!company) return <div className="page-container">Company not found</div>;
+
+    // 🔥 Calculations
     const profit = company.revenue - company.expenses;
-    const profitMargin = ((profit / company.revenue) * 100).toFixed(1);
-    const score = Math.round(Math.min(100, Math.max(40, profit / 500)));
+    const margin = (profit / company.revenue) * 100;
+    const expenseRatio = (company.expenses / company.revenue) * 100;
+    const ebitda = profit * 0.9;
 
-    const formatCurrency = (amount) => {
-        return new Intl.NumberFormat('en-IN', {
-            style: 'currency',
-            currency: 'INR',
-            maximumFractionDigits: 0
-        }).format(amount);
-    };
+    // 🔥 Decision logic
+    let decision = "";
+    let decisionClass = "";
+    let insights = [];
+    let recommendation = "";
+
+    if (company.healthScore >= 75 && margin > 20) {
+        decision = "Approved";
+        decisionClass = "success";
+
+        insights = [
+            "Strong profit margin indicates efficient operations",
+            "Stable revenue growth observed across periods",
+            "Low expense ratio suggests good cost management",
+        ];
+
+        recommendation =
+            "Eligible for loan with favorable terms due to strong financial performance.";
+    } else if (company.healthScore >= 50) {
+        decision = "Review";
+        decisionClass = "warning";
+
+        insights = [
+            "Moderate profit margins indicate average performance",
+            "Expense ratio is slightly high and needs monitoring",
+            "Revenue consistency is acceptable but not strong",
+        ];
+
+        recommendation =
+            "Proceed with caution. Manual review recommended before approval.";
+    } else {
+        decision = "Rejected";
+        decisionClass = "danger";
+
+        insights = [
+            "Low profitability indicates weak financial health",
+            "High expenses relative to revenue increase risk",
+            "Unstable performance makes loan risky",
+        ];
+
+        recommendation =
+            "Not eligible for loan currently. Financial improvement required.";
+    }
 
     return (
         <div className="page-container">
-            <header className="page-header">
-                <Link to="/" style={{ display: "inline-flex", alignItems: "center", gap: "6px", color: "var(--text-muted)", marginBottom: "16px", fontSize: "0.875rem", fontWeight: "500" }}>
-                    <ArrowLeft size={16} /> Back to Dashboard
-                </Link>
-                <h1 className="page-title">{company.name}</h1>
-                <p className="page-subtitle">Detailed financial analytics and operational insights</p>
-            </header>
 
-            <div className="grid-cards" style={{ gridTemplateColumns: "repeat(4, 1fr)" }}>
-                <div className="card">
-                    <div className="card-title" style={{ display: "flex", justifyContent: "space-between" }}>
-                        Revenue <TrendingUp size={16} />
-                    </div>
-                    <div className="card-value">{formatCurrency(company.revenue)}</div>
-                    <div className="card-desc">Total top-line generated</div>
-                </div>
-                <div className="card">
-                    <div className="card-title" style={{ display: "flex", justifyContent: "space-between" }}>
-                        Expenses <TrendingDown size={16} />
-                    </div>
-                    <div className="card-value">{formatCurrency(company.expenses)}</div>
-                    <div className="card-desc">Total operational costs</div>
-                </div>
-                <div className="card">
-                    <div className="card-title" style={{ display: "flex", justifyContent: "space-between" }}>
-                        Profit <DollarSign size={16} />
-                    </div>
-                    <div className="card-value" style={{ color: profit > 0 ? "var(--success)" : "var(--danger)" }}>
-                        {formatCurrency(profit)}
-                    </div>
-                    <div className="card-desc">Net bottom-line profit</div>
-                </div>
-                <div className="card">
-                    <div className="card-title" style={{ display: "flex", justifyContent: "space-between" }}>
-                        Profit Margin <Activity size={16} />
-                    </div>
-                    <div className="card-value">{profitMargin}%</div>
-                    <div className="card-desc">Efficiency metric</div>
+            {/* HEADER */}
+            <div className="page-header">
+                <h1 className="page-title">{company.name} - Insights</h1>
+                <p className="page-subtitle">AI-driven Financial Evaluation</p>
+            </div>
+
+            {/* DECISION */}
+            <div className="card" style={{ marginBottom: "24px" }}>
+                <div className="card-title">Loan Decision</div>
+
+                <div
+                    className={`badge ${decisionClass}`}
+                    style={{
+                        fontSize: "20px",
+                        padding: "10px 18px",
+                        marginTop: "10px",
+                    }}
+                >
+                    {decision}
                 </div>
             </div>
 
-            <div className="grid-content">
+            {/* METRICS */}
+            <div className="grid-cards">
+
                 <div className="card">
-                    <h3 style={{ fontSize: "1.125rem", fontWeight: "600", marginBottom: "24px", color: "var(--text-main)" }}>Smart Insights Engine</h3>
-                    
-                    <div className="insight-point">
-                        <CheckCircle2 size={20} color="var(--success)" style={{ flexShrink: 0, marginTop: "2px" }} />
-                        <div>
-                            <h4>Revenue Growth is Stable</h4>
-                            <p>The business is demonstrating consistent monthly revenue generation indicative of a healthy customer base and steady demand.</p>
-                        </div>
-                    </div>
-
-                    <div className="insight-point" style={{ borderColor: company.expenses > (company.revenue * 0.7) ? "var(--danger-bg)" : "var(--border-color)" }}>
-                        {company.expenses > (company.revenue * 0.7) ? (
-                            <AlertCircle size={20} color="var(--danger)" style={{ flexShrink: 0, marginTop: "2px" }} />
-                        ) : (
-                            <CheckCircle2 size={20} color="var(--success)" style={{ flexShrink: 0, marginTop: "2px" }} />
-                        )}
-                        <div>
-                            <h4>Operational Expenses</h4>
-                            {company.expenses > (company.revenue * 0.7) ? (
-                                <p>High operational expenses detected. The cost profile is consuming over 70% of generated revenue, which poses a potential liquidity risk.</p>
-                            ) : (
-                                <p>Operating expenses are well within acceptable parameters, leaving a robust buffer for profitability and debt servicing.</p>
-                            )}
-                        </div>
-                    </div>
-
-                    <div className="insight-point">
-                        {profitMargin > 15 ? (
-                            <CheckCircle2 size={20} color="var(--success)" style={{ flexShrink: 0, marginTop: "2px" }} />
-                        ) : (
-                            <AlertCircle size={20} color="var(--warning)" style={{ flexShrink: 0, marginTop: "2px" }} />
-                        )}
-                        <div>
-                            <h4>Profitability Analysis</h4>
-                            {profitMargin > 15 ? (
-                                <p>Profit margin is strong. The business maintains excellent pricing power and operational efficiency.</p>
-                            ) : (
-                                <p>Profit margins are narrow. While the business is generating cash, the low margin leaves it vulnerable to market shocks.</p>
-                            )}
-                        </div>
-                    </div>
+                    <div className="card-title">EBITDA</div>
+                    <div className="card-value">₹{Math.round(ebitda)}</div>
                 </div>
 
-                <div className="card" style={{ height: "fit-content" }}>
-                    <h3 style={{ fontSize: "1.125rem", fontWeight: "600", marginBottom: "24px", color: "var(--text-main)" }}>Evaluation Summary</h3>
-                    
-                    <div style={{ padding: "24px", backgroundColor: "var(--bg-dark)", borderRadius: "8px", textAlign: "center", marginBottom: "24px", border: "1px solid var(--border-color)" }}>
-                        <div style={{ fontSize: "0.875rem", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: "500", marginBottom: "8px" }}>Overall Health Score</div>
-                        <div style={{ fontSize: "3rem", fontWeight: "700", color: score >= 70 ? "var(--success)" : score >= 50 ? "var(--warning)" : "var(--danger)" }}>
-                            {score}
-                        </div>
-                    </div>
-
-                    <Link to={`/loan/${company.id}`} className="btn-action" style={{ width: "100%", justifyContent: "center", padding: "12px" }}>
-                        Proceed to Loan Evaluation <ArrowLeft size={16} style={{ transform: "rotate(180deg)" }} />
-                    </Link>
+                <div className="card">
+                    <div className="card-title">Profit Margin</div>
+                    <div className="card-value">{margin.toFixed(1)}%</div>
                 </div>
+
+                <div className="card">
+                    <div className="card-title">Expense Ratio</div>
+                    <div className="card-value">{expenseRatio.toFixed(1)}%</div>
+                </div>
+
+                <div className="card">
+                    <div className="card-title">Health Score</div>
+                    <div className="card-value">{company.healthScore}</div>
+                </div>
+
             </div>
+
+            {/* AI REASONING */}
+            <div className="card" style={{ marginTop: "24px" }}>
+                <div className="card-title">AI Reasoning</div>
+
+                {insights.map((point, index) => (
+                    <div key={index} className="insight-point">
+                        <div>⚡</div>
+                        <p>{point}</p>
+                    </div>
+                ))}
+            </div>
+
+            {/* RECOMMENDATION */}
+            <div className="card" style={{ marginTop: "24px" }}>
+                <div className="card-title">Recommendation</div>
+                <p className="card-desc">{recommendation}</p>
+            </div>
+
+            {/* 🔥 BUTTON TO LOAN PAGE */}
+            <div style={{ marginTop: "24px" }}>
+                <button
+                    className="btn-action"
+                    onClick={() => navigate(`/loan/${company.id}`)}
+                >
+                    View Loan Decision →
+                </button>
+            </div>
+
         </div>
     );
 }
