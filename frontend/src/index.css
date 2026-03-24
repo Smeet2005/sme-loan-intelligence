@@ -10,6 +10,14 @@
   --primary: #10b981;
   --primary-hover: #059669;
   --primary-glow: rgba(16, 185, 129, 0.15);
+  
+  --success: #10b981;
+  --success-bg: rgba(16, 185, 129, 0.1);
+  --warning: #f59e0b;
+  --warning-bg: rgba(245, 158, 11, 0.1);
+  --danger: #ef4444;
+  --danger-bg: rgba(239, 68, 68, 0.1);
+
   --border-color: #1e293b;
   --border-active: rgba(16, 185, 129, 0.5);
   --font-family: 'Inter', system-ui, -apple-system, blinkmacsystemfont, 'Segoe UI', roboto, sans-serif;
@@ -72,17 +80,10 @@ a {
   line-height: 1.2;
 }
 
-.card-change {
-  display: flex;
-  align-items: center;
-  gap: 4px;
+.card-desc {
+  color: var(--text-muted);
   font-size: 0.875rem;
-  font-weight: 500;
-  margin-top: 12px;
-}
-
-.card-change.positive {
-  color: var(--primary);
+  margin-top: 8px;
 }
 
 .page-container {
@@ -101,6 +102,7 @@ a {
   font-weight: 600;
   color: var(--text-main);
   margin-bottom: 8px;
+  letter-spacing: -0.02em;
 }
 
 .page-subtitle {
@@ -126,3 +128,118 @@ a {
     grid-template-columns: 1fr;
   }
 }
+
+/* Table Styles */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+th {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+td {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.9375rem;
+  color: var(--text-main);
+  vertical-align: middle;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+tbody tr:hover {
+  background-color: var(--bg-hover);
+}
+
+.company-name {
+  font-weight: 600;
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.badge.success {
+  background-color: var(--success-bg);
+  color: var(--success);
+}
+
+.badge.warning {
+  background-color: var(--warning-bg);
+  color: var(--warning);
+}
+
+.badge.danger {
+  background-color: var(--danger-bg);
+  color: var(--danger);
+}
+
+/* Buttons */
+.btn-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--primary);
+  background-color: var(--primary-glow);
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.btn-action:hover {
+  background-color: var(--primary);
+  color: var(--bg-dark);
+}
+
+.insight-point {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 16px;
+  background-color: var(--bg-dark);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+}
+
+.insight-point p {
+  line-height: 1.5;
+  color: var(--text-main);
+}
+
+.insight-point h4 {
+  font-size: 0.9375rem;
+  margin-bottom: 4px;
+  color: var(--text-main);
+}
+
